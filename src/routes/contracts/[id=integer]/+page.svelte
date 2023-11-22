@@ -5,7 +5,6 @@
 	import { writable } from 'svelte/store'
 	import DateInput from '../../../components/DateInput.svelte'
 	import Select from '../../../components/Select.svelte'
-	import type { Contract } from '../../../types'
 	import ContractItems from '../_components/ContractItems.svelte'
 	import type { PageServerData, SubmitFunction } from './$types'
 
@@ -15,17 +14,14 @@
 	let toastStore = getToastStore()
 
 	$: data.contract.dueDate = add(data.contract.signedDate, { years: 1 })
-	$: data.contract.totalPrice = $contractItems.reduce((acc, item) => acc + item.pricePerUnit! * item.totalUnits!, 0)
+	$: data.contract.totalPrice = $contractItems.reduce(
+		(acc, item) => acc + item.signedPricePerBatch! * item.totalRequestedBatchQuantity!,
+		0
+	)
 
 	let submitFn: SubmitFunction = ({ formData, cancel }) => {
 		data.contract.items = $contractItems
 		formData.append('contract', JSON.stringify(data.contract))
-
-		const validStatus = getInvalidFields(data.contract)
-		if (!validStatus.isValid) {
-			toastStore.trigger({ background: 'bg-error-500', message: 'Alguns campos não foram preenchidos!' })
-			cancel()
-		}
 
 		return async ({ result }) => {
 			let toastMsg: ToastSettings = {
@@ -33,27 +29,6 @@
 				message: (result as any).data.message
 			}
 			toastStore.trigger(toastMsg)
-		}
-	}
-
-	let isFalsy = (value: any) => value == '' || value == 0 || value == null || value == undefined
-
-	let getInvalidFields = (contract: Contract) => {
-		const emptyFields = Object.entries(contract)
-			.filter(([key, value]) => value == '')
-			.map(([key]) => key)
-
-		const anyEmptyItem = contract.items.some(
-			(item) =>
-				isFalsy(item.description) ||
-				isFalsy(item.amountPerUnit) ||
-				isFalsy(item.pricePerUnit) ||
-				isFalsy(item.totalUnits)
-		)
-
-		return {
-			isValid: emptyFields.length <= 0 && !anyEmptyItem,
-			fields: emptyFields
 		}
 	}
 </script>

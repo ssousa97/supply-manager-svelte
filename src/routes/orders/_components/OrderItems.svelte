@@ -2,9 +2,9 @@
 	import Icon from '@iconify/svelte'
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
 	import type { Writable } from 'svelte/store'
-	import type { ContractItem } from '../../../types'
+	import type { OrderItem } from '../../../types'
 
-	export let items: Writable<ContractItem[]>
+	export let items: Writable<OrderItem[]>
 
 	let newItemDescription = ''
 
@@ -16,7 +16,7 @@
 		newItemDescription = ''
 	}
 
-	function removeItem(currentItem: ContractItem) {
+	function removeItem(currentItem: OrderItem) {
 		$items = $items.filter((item) => item.description !== currentItem.description)
 	}
 </script>
@@ -50,7 +50,7 @@
 					<div class="flex gap-x-2">
 						<label for="" class="label">
 							<span class="text-sm">Quantidade total</span>
-							<input type="number" min="0" class="input rounded-md" bind:value={item.totalRequestedBatchQuantity} />
+							<input type="number" min="0" class="input rounded-md" bind:value={item.requestedBatchQuantity} />
 						</label>
 						<label for="" class="label">
 							<span class="text-sm">Quantidade por unidade</span>

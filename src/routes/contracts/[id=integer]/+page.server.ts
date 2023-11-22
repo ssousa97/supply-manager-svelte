@@ -1,4 +1,4 @@
-import { getUfs } from '$lib/getUfs'
+import { getUfs } from '$lib/utils'
 import { error } from '@sveltejs/kit'
 import type { Contract } from '../../../types'
 import type { PageServerLoad } from './$types'
@@ -31,6 +31,7 @@ export const actions = {
 		if (Object.keys(contract).length <= 0) {
 			throw error(500, { message: 'Erro inesperado' })
 		}
+		//TODO: validation on server-side
 
 		return { message: 'Contrato salvo com sucesso!' }
 	}

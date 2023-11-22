@@ -1,3 +1,7 @@
+export function isFalsy(value: any) {
+	return value === undefined || value === null || value === '' || value === false
+}
+
 export function getUfs() {
 	return [
 		'AC',
