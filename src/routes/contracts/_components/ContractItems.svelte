@@ -2,13 +2,16 @@
 	import Icon from '@iconify/svelte'
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
 	import type { Writable } from 'svelte/store'
+	import PriceInput from '../../../components/PriceInput.svelte'
+	import Select from '../../../components/Select.svelte'
 	import type { ContractItem } from '../../../types'
 
 	export let items: Writable<ContractItem[]>
+	export let itemsCodes: Writable<string[]>
 
 	let newItemDescription = ''
 
-	function addItem(e: any) {
+	let addItem = (e: any) => {
 		e.preventDefault()
 		if (newItemDescription === '') return
 
@@ -16,9 +19,8 @@
 		newItemDescription = ''
 	}
 
-	function removeItem(currentItem: ContractItem) {
-		$items = $items.filter((item) => item.description !== currentItem.description)
-	}
+	let removeItem = (currentItem: ContractItem) =>
+		($items = $items.filter((item) => item.description !== currentItem.description))
 </script>
 
 <label for="" class="label flex-1">
@@ -43,10 +45,27 @@
 					<span class="text-sm">{item.description}</span>
 				</svelte:fragment>
 				<svelte:fragment slot="content">
-					<label for="" class="label">
-						<span class="text-sm">Descrição</span>
-						<input type="text" class="input rounded-md" bind:value={item.description} />
-					</label>
+					<div class="flex gap-x-2">
+						<label for="" class="label flex-1">
+							<span class="text-sm">Descrição</span>
+							<input type="text" class="input rounded-md" bind:value={item.description} />
+						</label>
+						<label for="" class="label flex-1">
+							<span class="text-sm">Código da categoria</span>
+							<Select
+								value={item.code}
+								options={$itemsCodes}
+								propertyName="Código"
+								onChange={(e) => (item.code = e.target.value)}
+								creatable
+								onCreate={(code) => {
+									if (!code) return
+									$itemsCodes = [...$itemsCodes, code]
+									item.code = code
+								}}
+							/>
+						</label>
+					</div>
 					<div class="flex gap-x-2">
 						<label for="" class="label">
 							<span class="text-sm">Quantidade total</span>
@@ -58,7 +77,10 @@
 						</label>
 						<label for="" class="label">
 							<span class="text-sm">Preço por unidade</span>
-							<input type="number" min="0" class="input rounded-md" bind:value={item.signedPricePerBatch} />
+							<PriceInput
+								value={item.signedPricePerBatch}
+								onValueChange={(value) => (item.signedPricePerBatch = value)}
+							/>
 						</label>
 					</div>
 					<div class="flex justify-end">

@@ -41,7 +41,11 @@
 			<div class="flex flex-[6] gap-x-2">
 				<label class="label flex-[2]" for="">
 					<span class="text-sm">Data do pedido</span>
-					<DateInput date={data.order.checkInDate} className="rounded-md" />
+					<DateInput
+						date={data.order.checkInDate}
+						className="rounded-md"
+						onChange={(e) => (data.order.checkInDate = e)}
+					/>
 				</label>
 				<label class="label flex-[2]">
 					<span class="text-sm">Validade</span>
@@ -133,14 +137,22 @@
 			</label>
 			<label for="" class="label flex-1">
 				<span class="text-sm">Data de saída</span>
-				<DateInput date={data.order.dispatchDate ?? ''} className="rounded-md" />
+				<DateInput
+					date={data.order.dispatchDate ?? ''}
+					className="rounded-md"
+					onChange={(e) => (data.order.dispatchDate = e)}
+				/>
 			</label>
 			<label for="" class="label flex-1">
 				<span class="text-sm">Data de entrega</span>
-				<DateInput date={data.order.deliveryDate ?? ''} className="rounded-md" />
+				<DateInput
+					date={data.order.deliveryDate ?? ''}
+					className="rounded-md"
+					onChange={(e) => (data.order.deliveryDate = e)}
+				/>
 			</label>
 		</div>
-		<OrderItems items={orderItems} />
+		<OrderItems items={orderItems} itemsCodes={writable([])} />
 		<div class="flex justify-end">
 			<button on:click={() => {}} class="btn variant-filled-success">Salvar</button>
 		</div>

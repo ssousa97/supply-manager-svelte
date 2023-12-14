@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@canutin/svelte-currency-input':
+    specifier: ^0.11.3
+    version: 0.11.3
   date-fns:
     specifier: ^2.30.0
     version: 2.30.0
@@ -105,6 +108,10 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.0
+    dev: false
+
+  /@canutin/svelte-currency-input@0.11.3:
+    resolution: {integrity: sha512-iT7KSIh26TuNez1/Pzx0LLlLYiRGNltjI+EdatXPzYm4i6lWSKB8G6SKIsiBstEiU5v8AifjbRiCn6mKCNWPlw==}
     dev: false
 
   /@esbuild/android-arm64@0.18.20:

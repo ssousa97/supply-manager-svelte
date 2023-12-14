@@ -12,6 +12,7 @@ export type Contract = {
 
 export type ContractItem = {
 	id?: number
+	code?: string
 	description: string
 	totalRequestedBatchQuantity?: number
 	signedPricePerBatch?: number

@@ -2,13 +2,15 @@
 	import Icon from '@iconify/svelte'
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton'
 	import type { Writable } from 'svelte/store'
+	import Select from '../../../components/Select.svelte'
 	import type { OrderItem } from '../../../types'
 
 	export let items: Writable<OrderItem[]>
+	export let itemsCodes: Writable<string[]>
 
 	let newItemDescription = ''
 
-	function addItem(e: any) {
+	let addItem = (e: any) => {
 		e.preventDefault()
 		if (newItemDescription === '') return
 
@@ -16,9 +18,8 @@
 		newItemDescription = ''
 	}
 
-	function removeItem(currentItem: OrderItem) {
-		$items = $items.filter((item) => item.description !== currentItem.description)
-	}
+	let removeItem = (currentItem: OrderItem) =>
+		($items = $items.filter((item) => item.description !== currentItem.description))
 </script>
 
 <label for="" class="label flex-1">
@@ -43,10 +44,25 @@
 					<span class="text-sm">{item.description}</span>
 				</svelte:fragment>
 				<svelte:fragment slot="content">
-					<label for="" class="label">
-						<span class="text-sm">Descrição</span>
-						<input type="text" class="input rounded-md" bind:value={item.description} />
-					</label>
+					<div class="flex gap-x-2">
+						<label for="" class="label">
+							<span class="text-sm">Descrição</span>
+							<input type="text" class="input rounded-md" bind:value={item.description} />
+						</label>
+
+						<Select
+							value={item.code}
+							options={$itemsCodes}
+							propertyName="Código"
+							onChange={(e) => (item.code = e.target.value)}
+							creatable
+							onCreate={(code) => {
+								if (!code) return
+								$itemsCodes = [...$itemsCodes, code]
+								item.code = code
+							}}
+						/>
+					</div>
 					<div class="flex gap-x-2">
 						<label for="" class="label">
 							<span class="text-sm">Quantidade total</span>

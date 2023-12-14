@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { enhance } from '$app/forms'
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton'
-	import { add } from 'date-fns'
 	import { writable } from 'svelte/store'
 	import DateInput from '../../../components/DateInput.svelte'
 	import Select from '../../../components/Select.svelte'
@@ -12,12 +11,6 @@
 
 	let contractItems = writable(data.contract.items)
 	let toastStore = getToastStore()
-
-	$: data.contract.dueDate = add(data.contract.signedDate, { years: 1 })
-	$: data.contract.totalPrice = $contractItems.reduce(
-		(acc, item) => acc + item.signedPricePerBatch! * item.totalRequestedBatchQuantity!,
-		0
-	)
 
 	let submitFn: SubmitFunction = ({ formData, cancel }) => {
 		data.contract.items = $contractItems
@@ -47,7 +40,11 @@
 			</label>
 			<label for="" class="label flex-1">
 				<span class="text-sm">Data de assinatura</span>
-				<DateInput className="rounded-md" date={data.contract.signedDate} />
+				<DateInput
+					className="rounded-md"
+					date={data.contract.signedDate}
+					onChange={(e) => (data.contract.signedDate = e)}
+				/>
 			</label>
 			<label for="" class="label flex-1">
 				<span class="text-sm">UF</span>
@@ -55,9 +52,7 @@
 					value={data.contract.uf}
 					options={data.ufs}
 					propertyName="UF"
-					onChange={(e) => {
-						data.contract.uf = e.target.value
-					}}
+					onChange={(e) => (data.contract.uf = e.target.value)}
 				/>
 			</label>
 		</div>
@@ -68,9 +63,7 @@
 				propertyName="Identificador"
 				creatable
 				options={data.institutions}
-				onChange={(e) => {
-					data.contract.institution = e.target.value
-				}}
+				onChange={(e) => (data.contract.institution = e.target.value)}
 				onCreate={(institution) => {
 					if (!institution) return
 					data.contract.institution = institution
@@ -85,9 +78,7 @@
 				propertyName="Categoria"
 				creatable
 				options={data.categories}
-				onChange={(e) => {
-					data.contract.category = e.target.value
-				}}
+				onChange={(e) => (data.contract.category = e.target.value)}
 				onCreate={(category) => {
 					if (!category) return
 					data.contract.category = category
@@ -95,7 +86,7 @@
 				}}
 			/>
 		</label>
-		<ContractItems items={contractItems} />
+		<ContractItems items={contractItems} itemsCodes={writable([])} />
 		<div class="flex justify-end">
 			<button on:click={() => {}} class="btn variant-filled-success">Salvar</button>
 		</div>

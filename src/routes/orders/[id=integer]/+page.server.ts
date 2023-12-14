@@ -1,6 +1,7 @@
 /* eslint-disable prefer-const */
 import { getUfs } from '$lib/utils'
 import { error } from '@sveltejs/kit'
+import { add, parseISO } from 'date-fns'
 import type { Order } from '../../../types'
 import type { PageServerLoad } from './$types'
 
@@ -37,11 +38,16 @@ export const load: PageServerLoad = () => {
 
 export const actions = {
 	upsert: async ({ request }) => {
-		const contract = JSON.parse((await request.formData()).get('order')?.toString() ?? '')
-		if (Object.keys(contract).length <= 0) {
+		const order = JSON.parse((await request.formData()).get('order')?.toString() ?? '') as Order
+		if (Object.keys(order).length <= 0) {
 			throw error(500, { message: 'Erro inesperado' })
 		}
+
 		//TODO: validation on server-side
+		order.dueDate = add(parseISO(order.checkInDate as any), { days: order.term })
+		order.price = order.items.reduce((acc, item) => acc + item.signedPricePerBatch! * item.requestedBatchQuantity!, 0)
+
+		console.log(order)
 
 		return { message: 'Empenho salvo com sucesso!' }
 	}
